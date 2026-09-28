@@ -1,7 +1,8 @@
 import { createHash } from 'node:crypto'
-import { copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
+import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 import { spawnSync } from 'node:child_process'
+import { migratePortableSessions } from './session-portability.mjs'
 
 function fail(message) { throw new Error(message) }
 function log(message) { process.stdout.write(`[portable] ${message}\n`) }
@@ -80,6 +81,17 @@ function ensureLayout() {
     env.npm_config_cache, env.npm_config_prefix, env.TEMP, runtime, state,
     join(root, 'models'), join(root, 'logs'), join(root, 'packages', 'downloads'),
   ]) mkdirSync(path, { recursive: true })
+}
+
+function secureCredentialFile() {
+  if (target === 'windows-x64') return
+  const credentials = join(env.DSH_HOME, '.credentials.yaml')
+  if (!existsSync(credentials)) return
+  try {
+    chmodSync(credentials, 0o600)
+  } catch (error) {
+    fail(`cannot secure portable credentials at ${credentials}: ${error.message}`)
+  }
 }
 
 function expectedState() {
@@ -187,8 +199,10 @@ function containsSymlink(base) {
 
 async function launch(dshArgs) {
   ensureLayout()
+  migratePortableSessions({ root, target, dshHome: env.DSH_HOME, log })
   await maybeAutoUpdate()
   if (!installed()) setup()
+  secureCredentialFile()
   const result = spawnSync(node, [dshBin, ...dshArgs], { stdio: 'inherit', cwd: process.cwd(), env })
   if (result.error) throw result.error
   return result.status ?? 1
