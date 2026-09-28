@@ -1,7 +1,7 @@
 import { createHash } from 'node:crypto'
 import { chmodSync, copyFileSync, existsSync, lstatSync, mkdirSync, readFileSync, readdirSync, renameSync, rmSync, writeFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
-import { spawnSync } from 'node:child_process'
+import { spawn, spawnSync } from 'node:child_process'
 import { migratePortableSessions } from './session-portability.mjs'
 
 function fail(message) { throw new Error(message) }
@@ -203,9 +203,58 @@ async function launch(dshArgs) {
   await maybeAutoUpdate()
   if (!installed()) setup()
   secureCredentialFile()
+  const web = dshArgs[0] === 'web' || (dshArgs[0] === '--profile' && dshArgs[1] === 'web')
+  const handoffBrowser = web && !dshArgs.includes('--no-open') && !dshArgs.includes('--help') && !dshArgs.includes('-h')
+  if (handoffBrowser) return launchWebWithHostBrowser([...dshArgs, '--no-open'])
   const result = spawnSync(node, [dshBin, ...dshArgs], { stdio: 'inherit', cwd: process.cwd(), env })
   if (result.error) throw result.error
   return result.status ?? 1
+}
+
+function openHostBrowser(url) {
+  let command
+  let openerArgs
+  if (process.platform === 'darwin') {
+    command = '/usr/bin/open'
+    openerArgs = [url]
+  } else if (process.platform === 'win32') {
+    command = process.env.COMSPEC || 'cmd.exe'
+    openerArgs = ['/d', '/s', '/c', 'start', '', url]
+  } else {
+    command = 'xdg-open'
+    openerArgs = [url]
+  }
+  const opener = spawn(command, openerArgs, { detached: true, stdio: 'ignore', env: process.env })
+  opener.on('error', error => log(`could not open the host browser: ${error.message}`))
+  opener.unref()
+}
+
+function launchWebWithHostBrowser(dshArgs) {
+  return new Promise((resolveLaunch, rejectLaunch) => {
+    const child = spawn(node, [dshBin, ...dshArgs], {
+      stdio: ['inherit', 'pipe', 'inherit'],
+      cwd: process.cwd(),
+      env,
+    })
+    let output = ''
+    let opened = false
+    child.stdout.setEncoding('utf8')
+    child.stdout.on('data', chunk => {
+      process.stdout.write(chunk)
+      if (opened) return
+      output = `${output}${chunk}`.slice(-8192)
+      const match = output.match(/dsh web: (https?:\/\/\S+)/)
+      if (!match) return
+      opened = true
+      log('opening the default browser with the host user environment')
+      openHostBrowser(match[1])
+    })
+    child.once('error', rejectLaunch)
+    child.once('close', (code, signal) => {
+      if (signal) resolveLaunch(1)
+      else resolveLaunch(code ?? 1)
+    })
+  })
 }
 
 async function portableUpdate(rest) {
