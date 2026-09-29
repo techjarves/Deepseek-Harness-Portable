@@ -1,26 +1,53 @@
+<div align="center">
+
+<img src="assets/deepseek-harness-portable.svg" alt="DeepSeek Harness Portable" width="168">
+
 # DeepSeek Harness Portable
 
-[![Cross-platform tests](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/test.yml/badge.svg)](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/test.yml)
-[![Automatic updates](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/auto-update.yml/badge.svg)](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/auto-update.yml)
-[![Latest release](https://img.shields.io/github/v/release/techjarves/Deepseek-Harness-Portable?display_name=tag)](https://github.com/techjarves/Deepseek-Harness-Portable/releases/latest)
+### *Your complete AI coding workspace—portable across Windows, Linux, and macOS.*
 
-Run the official DeepSeek Harness from one portable folder on Windows, Linux, and macOS. Host-level Node.js or npm installation is not required.
+Run the official DeepSeek Harness from one self-contained folder on an internal disk, USB drive, or external SSD. Your runtimes stay isolated by operating system while chats, settings, skills, plugins, and credentials travel with you.
 
-The same folder can live on an internal disk, USB drive, or external SSD. Each operating system downloads only its own runtime, while sessions and settings remain shared.
+[![Latest release](https://img.shields.io/github/v/release/techjarves/Deepseek-Harness-Portable?display_name=tag&style=flat-square&color=2563eb)](https://github.com/techjarves/Deepseek-Harness-Portable/releases/latest)
+[![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-0f172a?style=flat-square)](#supported-platforms)
+[![Architecture](https://img.shields.io/badge/CPU-x64%20%7C%20arm64-64748b?style=flat-square)](#supported-platforms)
+[![Cross-platform tests](https://img.shields.io/github/actions/workflow/status/techjarves/Deepseek-Harness-Portable/test.yml?branch=main&style=flat-square&label=tests)](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/test.yml)
+[![Automatic updates](https://img.shields.io/github/actions/workflow/status/techjarves/Deepseek-Harness-Portable/auto-update.yml?branch=main&style=flat-square&label=automatic%20updates)](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/auto-update.yml)
+
+[**Download latest release**](https://github.com/techjarves/Deepseek-Harness-Portable/releases/latest/download/deepseek-harness-portable.zip) · [**Quick start**](#quick-start) · [**Launcher commands**](#launcher-commands) · [**How portability works**](#how-portability-works) · [**Security**](#security-and-credentials) · [**Troubleshooting**](#troubleshooting)
+
+</div>
+
+---
+
+## Why this project?
+
+DeepSeek Harness normally depends on a local Node.js environment and stores host-specific paths. This project wraps the official Harness distribution with a portable bootstrap that keeps installation, updates, runtime dependencies, and cross-platform session migration inside one folder.
+
+| | Capability | What it means |
+| --- | --- | --- |
+| 🚀 | **One-command startup** | Run the launcher for your operating system to open the local web interface. |
+| 💾 | **One movable folder** | Use an internal drive, USB drive, external SSD, or an exFAT volume. |
+| 🧩 | **No global runtime required** | Portable Node.js, pnpm, native packages, and caches remain inside the folder. |
+| 🖥️ | **Lazy platform setup** | Only the runtime for the operating system currently in use is downloaded. |
+| 💬 | **Cross-platform chats** | Workspace paths and compressed session headers are migrated when the folder changes operating systems. |
+| 🔄 | **Tested automatic updates** | Updates are installed only after the release passes the supported-platform test matrix. |
+| 🧹 | **Recoverable reset** | Remove mutable application data while preserving models and reinstall essentials. |
 
 ## Supported platforms
 
-| Platform | Architecture | Baseline | Launcher |
+| Operating system | Architecture | Baseline | Launcher |
 | --- | --- | --- | --- |
-| Windows | x64 | Windows 10 or 11 | `windows.bat` |
-| Linux | x64 | glibc, Ubuntu 22.04 compatible | `linux.sh` |
+| Windows 10/11 | x64 | 64-bit desktop Windows | `windows.bat` |
+| Linux | x64 | glibc; Ubuntu 22.04 compatible | `linux.sh` |
 | macOS | Apple Silicon | arm64 | `mac.sh` |
 
-Windows ARM64, Linux ARM64, macOS Intel, and musl-based Linux distributions are not supported in version 1.
+> [!NOTE]
+> Windows ARM64, Linux ARM64, Intel macOS, and musl-based Linux distributions are not supported in version 1.
 
 ## Quick start
 
-Download [the latest portable ZIP](https://github.com/techjarves/Deepseek-Harness-Portable/releases/latest/download/deepseek-harness-portable.zip), extract it, and run the launcher for the current operating system.
+Download [`deepseek-harness-portable.zip`](https://github.com/techjarves/Deepseek-Harness-Portable/releases/latest/download/deepseek-harness-portable.zip), extract it, and run the launcher for the current operating system.
 
 ### Windows
 
@@ -43,60 +70,104 @@ sh mac.sh setup
 sh mac.sh
 ```
 
-Running a launcher without arguments starts the DeepSeek Harness web interface. The terminal prints its local address, normally `http://127.0.0.1:3080`.
+The first command initializes or repairs only the current platform. The second starts the local DeepSeek Harness web interface and opens it in your normal browser, typically at `http://127.0.0.1:3080`.
+
+> [!TIP]
+> Setup is optional on first launch. Running the launcher directly also installs the current platform when its runtime is missing.
 
 ## Launcher commands
 
-All launchers expose the same interface:
+Every launcher exposes the same interface:
 
 | Command | Purpose |
 | --- | --- |
-| `<launcher>` | Start the web interface |
-| `<launcher> setup` | Install or repair the current platform |
-| `<launcher> doctor` | Verify the runtime and portable layout |
-| `<launcher> portable-update` | Force an immediate update check |
-| `<launcher> -- <arguments>` | Pass arguments directly to `dsh` |
+| `<launcher>` | Start the web interface. |
+| `<launcher> setup` | Install or repair the current platform only. |
+| `<launcher> doctor` | Verify the architecture, runtime, portable layout, and Harness installation. |
+| `<launcher> portable-update` | Force an immediate check for the latest tested manifest. |
+| `<launcher> -- <arguments>` | Pass arguments directly to the official `dsh` CLI. |
 
 Examples:
 
 ```sh
-sh mac.sh -- --help
-sh linux.sh -- --profile headless "your task"
+sh mac.sh doctor
+sh linux.sh portable-update
+sh mac.sh -- --profile headless "summarize this project"
 ```
 
 ```bat
-windows.bat -- web --no-open
+windows.bat doctor
+windows.bat -- --help
 ```
 
-## Portability model
+## How portability works
 
-- Node.js, pnpm, native modules, caches, and temporary files are stored per platform under `runtimes/`, `packages/`, and `temp/`.
-- DeepSeek Harness uses the official `DSH_HOME` interface at `data/dsh-home`.
-- Sessions, settings, credentials, skills, and plugins travel with the portable folder.
-- Platform runtimes are installed lazily; launching on Linux never downloads Windows or macOS assets.
-- Runtime installation uses staging, checksum verification, and atomic promotion.
-- Symlinks are not used, making the layout suitable for exFAT.
-- Moving or renaming the folder does not modify system configuration.
+### Platform isolation
 
-## Fully automatic updates
+Each operating system receives a separate runtime and cache. Initializing macOS never downloads Windows or Linux assets; those are added only when their launcher runs.
 
-Installed copies check for a tested release at most once every 24 hours. If an update is available, it is verified and installed before DeepSeek Harness starts. Network or installation failures leave the existing runtime active.
+```text
+Deepseek-Harness-Portable/
+├── windows.bat
+├── linux.sh
+├── mac.sh
+├── data/          shared Harness home, sessions and settings
+├── models/        preserved model files
+├── runtimes/      isolated windows-x64, linux-x64 and macos-arm64 runtimes
+├── packages/      downloads and package-manager caches
+├── scripts/       bootstrap, migration, diagnostics and reset logic
+├── state/         per-platform installation state
+├── logs/          portable launcher logs
+└── temp/          staging and temporary files
+```
 
-The repository also checks the DeepSeek Harness npm `next` channel once per day. A new upstream version is published only after the automation:
+The repository root intentionally contains only the three launchers. Everything else is organized by function.
+
+### Shared chats and workspaces
+
+DeepSeek Harness stores absolute workspace paths inside its registry, projection cache, session directory names, and compressed chat headers. Those paths are different on Windows, Linux, and macOS.
+
+Before Harness starts, the portable launcher:
+
+1. Detects paths belonging to another operating system.
+2. Relocates workspaces that live inside the portable folder.
+3. Rewrites only the session-header frame while preserving every compressed chat event.
+4. Moves the session to the correct operating-system-specific directory key.
+5. Synchronizes the workspace registry and projection cache.
+6. Keeps an untouched backup before rewriting a session log.
+
+If an external project is unavailable on the current computer, its chat history is attached to a fallback under `data/portable-workspaces/` so the conversation remains viewable. To edit the same project everywhere, keep its project files inside that portable workspace as well.
+
+### Safe installation and relocation
+
+- Downloads are written to staging locations and checked with SHA-256 before promotion.
+- An interrupted installation does not replace the previous working runtime.
+- Symlinks are avoided for exFAT compatibility.
+- Spaces and Unicode characters in the folder path are supported.
+- Moving or renaming the folder does not change system configuration.
+- Browsers are launched with the host user environment, preventing portable paths from interfering with the macOS Keychain or browser profile.
+
+## Automatic updates
+
+Installed copies check for a tested portable release at most once every 24 hours. Network or update failures leave the current runtime active.
+
+The repository automation checks the DeepSeek Harness npm update channel once per day. A candidate is published only after it:
 
 1. Generates an exact dependency lock.
 2. Runs the vulnerability audit.
 3. Performs clean installations on every supported platform.
-4. Runs contract, doctor, and CLI smoke tests.
-5. Publishes the release archive, SHA-256 checksums, and build provenance.
+4. Runs contract, doctor, CLI, session-portability, and smoke tests.
+5. Publishes the release archive, checksums, and build provenance.
 
-No routine developer release work is required. Failed candidates are not published, and the previous release remains available.
+Disable launcher-side update checks in a controlled environment with:
 
-To disable launcher-side checks for a controlled environment, set `DSH_PORTABLE_NO_AUTO_UPDATE=1`.
+```sh
+export DSH_PORTABLE_NO_AUTO_UPDATE=1
+```
 
 ## Reset
 
-Reset removes installed runtimes, application state, sessions, settings, credentials, caches, downloads, and logs. The `models/` folder and the immutable bootstrap files are preserved.
+Reset removes runtimes, sessions, settings, credentials, caches, downloads, logs, temporary files, and installation state. It preserves `models/`, the immutable launchers, reset tools, bootstrap logic, and signed manifests required to reinstall.
 
 ```bat
 scripts\reset.bat
@@ -106,18 +177,34 @@ scripts\reset.bat
 sh scripts/reset.sh
 ```
 
-Reset requires confirmation before deleting portable data.
+Both reset implementations require confirmation before removing portable data.
 
 ## Security and credentials
 
-Credentials saved by DeepSeek Harness are stored inside the portable folder and travel with it. They are plaintext at rest, and exFAT cannot provide reliable per-user permissions.
+> [!WARNING]
+> Credentials stored by DeepSeek Harness travel inside the portable folder in plaintext. exFAT cannot provide dependable per-user file permissions. Treat the drive and its backups as sensitive.
 
 - Keep the drive physically secure.
-- Do not commit `data/`, `state/`, runtimes, caches, or model files to Git.
-- Use `SHA256SUMS` from the release page to verify downloaded assets.
-- Release archives include GitHub build provenance.
+- Use provider keys with budgets or spending limits.
+- Never publish a fully initialized test archive containing `data/`.
+- Do not commit `data/`, `state/`, `runtimes/`, caches, or model files.
+- Revoke any credential that has been exposed in a terminal recording, screenshot, chat, or public repository.
+- Verify public downloads with the release `SHA256SUMS` file and GitHub build provenance.
 
-Cloud model requests still require network access and valid provider credentials. The installed DeepSeek Harness core can start offline after initialization.
+Cloud models still require network access and valid provider credentials. After initialization, the Harness core can start offline, but cloud inference and optional downloads cannot.
+
+## Troubleshooting
+
+| Symptom | Resolution |
+| --- | --- |
+| `Could not resolve host: nodejs.org` | Check DNS or network connectivity and run the launcher again. Completed downloads are reused. |
+| Credential file reports mode `664` | Run the latest launcher. It automatically repairs the file to owner-only permissions on macOS and Linux. |
+| A Windows chat is missing on macOS or Linux | Expand its workspace row. The launcher migrates the chat index and compressed session header at startup. |
+| An external project opens as an empty fallback | Copy the project into its directory under `data/portable-workspaces/`, or add its local path as a workspace on that computer. |
+| Chrome shows a macOS Keychain warning | Update to the latest portable release. Current launchers open browsers with the host user environment. Do not reset the Keychain. |
+| Linux reports a `noexec` mount | Remount the external drive with execution enabled, then rerun `doctor`. |
+
+For deeper diagnostics, run the platform launcher with `doctor` and review `data/dsh-home/logs/`.
 
 ## Testing
 
@@ -128,20 +215,22 @@ Every source change is tested through GitHub Actions on:
 - Ubuntu 24.04 x64
 - Apple Silicon macOS
 
-See [the test history](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/test.yml) for current results.
+The suite covers manifest integrity, clean installation, launcher behavior, runtime isolation, checksum validation, chat-path migration, multi-frame Zstandard history preservation, and CLI startup.
 
-## Project layout
-
-The repository root intentionally contains only:
-
-```text
-windows.bat
-linux.sh
-mac.sh
-```
-
-Bootstrap logic, documentation, manifests, reset tools, tests, and automation are organized in functional subdirectories.
+[View the cross-platform test history →](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/test.yml)
 
 ## Upstream project
 
-This project packages the official [`@deepseek-ai/dsh`](https://www.npmjs.com/package/@deepseek-ai/dsh) distribution. DeepSeek Harness itself is maintained in the [deepseek-ai/deepseek-harness](https://github.com/deepseek-ai/deepseek-harness) repository.
+This project packages the official [`@deepseek-ai/dsh`](https://www.npmjs.com/package/@deepseek-ai/dsh) distribution. DeepSeek Harness itself is maintained in [`deepseek-ai/deepseek-harness`](https://github.com/deepseek-ai/deepseek-harness).
+
+This repository is an independent portability layer and is not the upstream DeepSeek Harness project.
+
+---
+
+<div align="center">
+
+**One folder. Three operating systems. Your Harness workspace everywhere.**
+
+[Download](https://github.com/techjarves/Deepseek-Harness-Portable/releases/latest) · [Report an issue](https://github.com/techjarves/Deepseek-Harness-Portable/issues) · [View releases](https://github.com/techjarves/Deepseek-Harness-Portable/releases)
+
+</div>

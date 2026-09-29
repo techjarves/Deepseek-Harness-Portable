@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240" role="img" aria-labelledby="title description">
+  <title id="title">DeepSeek Harness Portable</title>
+  <desc id="description">A portable drive containing an AI terminal prompt</desc>
+  <defs>
+    <linearGradient id="background" x1="24" y1="16" x2="216" y2="224" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2563EB"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <linearGradient id="drive" x1="70" y1="57" x2="174" y2="184" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F8FAFC"/>
+      <stop offset="1" stop-color="#CBD5E1"/>
+    </linearGradient>
+  </defs>
+  <rect x="8" y="8" width="224" height="224" rx="52" fill="url(#background)"/>
+  <path d="M77 48h72l28 28v111a13 13 0 0 1-13 13H77a13 13 0 0 1-13-13V61a13 13 0 0 1 13-13Z" fill="url(#drive)"/>
+  <path d="M149 48v28h28" fill="#94A3B8"/>
+  <rect x="80" y="92" width="81" height="67" rx="14" fill="#0F172A"/>
+  <path d="m97 112 15 14-15 14M121 141h22" fill="none" stroke="#60A5FA" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="91" y="171" width="58" height="10" rx="5" fill="#64748B"/>
+  <circle cx="188" cy="176" r="28" fill="#22C55E" stroke="#F8FAFC" stroke-width="7"/>
+  <path d="M176 176h24m-9-9 9 9-9 9" fill="none" stroke="#052E16" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
