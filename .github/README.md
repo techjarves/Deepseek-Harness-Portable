@@ -12,7 +12,6 @@ Run the official DeepSeek Harness from one self-contained folder on an internal 
 [![Platforms](https://img.shields.io/badge/platforms-Windows%20%7C%20Linux%20%7C%20macOS-0f172a?style=flat-square)](#supported-platforms)
 [![Architecture](https://img.shields.io/badge/CPU-x64%20%7C%20arm64-64748b?style=flat-square)](#supported-platforms)
 [![Cross-platform tests](https://img.shields.io/github/actions/workflow/status/techjarves/Deepseek-Harness-Portable/test.yml?branch=main&style=flat-square&label=tests)](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/test.yml)
-[![Automatic updates](https://img.shields.io/github/actions/workflow/status/techjarves/Deepseek-Harness-Portable/auto-update.yml?branch=main&style=flat-square&label=automatic%20updates)](https://github.com/techjarves/Deepseek-Harness-Portable/actions/workflows/auto-update.yml)
 [![Watch demo](https://img.shields.io/badge/Watch-Demo-FF0000?style=flat-square&logo=youtube&logoColor=white)](https://youtu.be/nyTJ-1sqkVU)
 
 [**Download latest release**](https://github.com/techjarves/Deepseek-Harness-Portable/releases/latest/download/deepseek-harness-portable.zip) · [**Watch walkthrough**](https://youtu.be/nyTJ-1sqkVU) · [**Quick start**](#quick-start) · [**How portability works**](#how-portability-works) · [**Troubleshooting**](#troubleshooting)
